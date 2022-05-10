@@ -1,5 +1,5 @@
 <?php
-
+  require 'config.php';
 ?>
 
 <!DOCTYPE html>
@@ -14,6 +14,11 @@
 </head>
 
 <body>
+  <?php
+    $stagement = $pdo->prepare('select * from todo order by id desc;');
+    $stagement->execute();
+    $result = $stagement->fetchAll();
+  ?>
   <div class="card">
     <h2>TODO Home Page</h2>
     <div>
@@ -31,14 +36,26 @@
         </thead>
         <tbody>
           <tr>
-            <td>1</td>
-            <td>Hello</td>
-            <td>Description</td>
-            <td>created</td>
-            <td>
-              <a class="btn btn-warning" href="edit.php">Edit</a>
-              <a class="btn btn-danger" href="#">Delete</a>
-          </td>
+            <?php
+            $i = 1;
+              if($result){
+                foreach($result as $value){
+                ?>
+                <tr>
+                  <td><?php echo $i; ?></td>
+                  <td><?php echo $value['title']; ?></td>
+                  <td><?php echo $value['description']; ?></td>
+                  <td><?php echo $value['created_at'] ?></td>
+                  <td>
+                    <a href="edit.php?id=<?php echo $value['id']; ?>" class="btn btn-warning">Edit</a>
+                    <a href="delete.php?id=<?php echo $value['id']; ?>" class="btn btn-danger">Delete</a>
+                  </td>
+                </tr>
+                <?php
+                $i++;
+                }
+              }
+            ?>
           </tr>
         </tbody>
       </table>
